@@ -24,6 +24,40 @@ Now, time to get our hands dirty. But for technical aspect only, which are trans
 
 We will use partner registration for b2b integration case for sample.
 
+### Features and Stories
+
+> Jetbrains officially provide Cucumber plugins to assists us when writing feature files and generating step definitions stubs. Install them to simplify workflow.
+
+Story must be written in abstract, explain what, not how you done the tests or how your system or feature implemented.
+
+Following are sample of our Gherkin feature file, stored in ```src/test/resources/registration.feature``` file.
+
+```gherkin
+
+Feature: Partner Registrations
+  As a candidate partner, I want to be able to register my organization
+  So that my team able to use b2b integration support provided by tiket.com
+
+  Scenario Outline: Register with partner data
+    Given Partner want to register from organization "<organizationName>" contact person "<contactPerson>" business phone "<phoneNumber>" and business email "<emailAddress>"
+    And Already registered business partners
+#     | organizationName    | contactPerson | phoneNumber | emailAddress            | partnershipState  |
+      | Registered Partner  | Bang Subur    | 021765345   | registered@example.com  | ACTIVE            |
+    And Registration endpoint mapped to "/bitubi/registry"
+    When Submit registration data to registration endpoint
+    Then Partner registered when required data are valid "<dataValid>"
+    And Confirmation with credential email sent to given business email address "<emailAddress>"
+    Examples:
+      | organizationName    | contactPerson | phoneNumber | emailAddress            | dataValid       |
+      | Unregistered Partner| Agus Gamang   | 021323432   | blabla@sample.com       | true            |
+      | Another Unregistered| Ucup Sengklek | 234234324   | other@example.com       | true            |
+      | Registered Partner  | Bang Subur    | 021765345   | registered@example.com  | false           |
+      | Invalid Registrar   |               | 871231234   |                         | false           |
+
+```
+
+> Please note, data in ```Examples``` must be provided, no step definition run when no row data given. 
+
 ### Prepare Project
 
 Open [start.spring.io](https://start.spring.io/), choose latest spring boot version 1.5.x, key in group id (e.g. ```com.tiket.poc```) and artifact name (e.g. ```cucumber-sharing-session```) then search and add ```web```, ```mongodb```, ```embedded mongodb``` (for testing purpose) and ```lombok```, ```mail``` (sending email). Generate the project and download process will start. You will get following initial ```pom.xml``` content.
@@ -210,40 +244,6 @@ Configure [```maven-surefire-plugin<```](https://maven.apache.org/surefire/maven
             </plugin>
 
 ```
-
-### Features and Stories
-
-> Jetbrains officially provide Cucumber plugins to assists us when writing feature files and generating step definitions stubs. Install them to simplify workflow.
-
-Story must be written in abstract, explain what, not how you done the tests or how your system or feature implemented.
-
-Following are sample of our Gherkin feature file, stored in ```src/test/resources/registration.feature``` file.
-
-```gherkin
-
-Feature: Partner Registrations
-  As a candidate partner, I want to be able to register my organization
-  So that my team able to use b2b integration support provided by tiket.com
-
-  Scenario Outline: Register with partner data
-    Given Partner want to register from organization "<organizationName>" contact person "<contactPerson>" business phone "<phoneNumber>" and business email "<emailAddress>"
-    And Already registered business partners
-#     | organizationName    | contactPerson | phoneNumber | emailAddress            | partnershipState  |
-      | Registered Partner  | Bang Subur    | 021765345   | registered@example.com  | ACTIVE            |
-    And Registration endpoint mapped to "/bitubi/registry"
-    When Submit registration data to registration endpoint
-    Then Partner registered when required data are valid "<dataValid>"
-    And Confirmation with credential email sent to given business email address "<emailAddress>"
-    Examples:
-      | organizationName    | contactPerson | phoneNumber | emailAddress            | dataValid       |
-      | Unregistered Partner| Agus Gamang   | 021323432   | blabla@sample.com       | true            |
-      | Another Unregistered| Ucup Sengklek | 234234324   | other@example.com       | true            |
-      | Registered Partner  | Bang Subur    | 021765345   | registered@example.com  | false           |
-      | Invalid Registrar   |               | 871231234   |                         | false           |
-
-```
-
-> Please note, data in ```Examples``` must be provided, no step definition run when no row data given. 
 
 ### Write Test
 
